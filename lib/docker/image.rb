@@ -280,10 +280,10 @@ class Docker::Image
     #
     # If a block is passed, chunks of output produced by Docker will be passed
     # to that block.
-    def build_from_dir(dir, opts = {}, connection = Docker.connection,
+    def build_from_dir(dir, tmp_dir = nil, opts = {}, connection = Docker.connection,
                        creds = nil, &block)
 
-      tar = Docker::Util.create_dir_tar(dir)
+      tar = Docker::Util.create_dir_tar(dir, tmp_dir)
       build_from_tar tar, opts, connection, creds, &block
     ensure
       unless tar.nil?

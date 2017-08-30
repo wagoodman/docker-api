@@ -133,8 +133,8 @@ module Docker::Util
     output.tap(&:rewind).string
   end
 
-  def create_dir_tar(directory)
-    tempfile = create_temp_file
+  def create_dir_tar(directory, tmp_dir = nil)
+    tempfile = create_temp_file(tmp_dir)
     directory += '/' unless directory.end_with?('/')
 
     create_relative_dir_tar(directory, tempfile)
@@ -186,8 +186,12 @@ module Docker::Util
     tar
   end
 
-  def create_temp_file
-    tempfile_name = Dir::Tmpname.create('out') {}
+  def create_temp_file(destination = nil)
+    tempfile_name = if destination.blank?
+                      Dir::Tmpname.create('out') {}
+                    else
+                      Dir::Tmpname.create(File.join(destination, 'out')) {}
+                    end
     File.open(tempfile_name, 'wb+')
   end
 
